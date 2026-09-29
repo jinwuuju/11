@@ -53,7 +53,8 @@ ul{margin:6px 0;padding-left:18px}li{margin:3px 0}.hide{display:none}.row{displa
 </section>
 </main>
 <script>
-const BASE_DEFAULT='2026-09-28',CYC=30,POOL=50,KEEP=10;
+function localDateStr(d=new Date()){d.setHours(0,0,0,0);return d.getFullYear()+'-'+String(d.getMonth()+1).padStart(2,'0')+'-'+String(d.getDate()).padStart(2,'0')}
+const BASE_DEFAULT=localDateStr(),CYC=30,POOL=50,KEEP=10;
 const B=[["자연치즈 1장 + 브라질너트 1개 + 호두 2개","Ca·Se·ALA"],["브라질너트 1개 + 아몬드 5개 + 방울토마토 5개","Se·E·Mg·C"],["자연치즈 1장 + 호두 2개 + 블루베리 한 줌","Ca·ALA·C"],["브라질너트 1개 + 호박씨 1작은술 + 파프리카 반 개","Se·Zn·Mg·C"],["자연치즈 1장 + 아몬드 5개 + 망고 3조각","Ca·E·A·C"]];
 const L=[
 ["연어 포케","밥 대신 샐러드 베이스, 아보카도 추가","Ω3·D·B12·E·K"],
@@ -178,8 +179,8 @@ document.getElementById('today').innerHTML=`
 <div class="card"><div class="lbl">저녁 · 15분 요리</div><div class="big">${d[0]}</div><div class="ing">재료: ${d[1].join(', ')}</div><div class="how">${d[2]}</div>${tags(d[3])}
 <div class="m" style="margin-top:8px">+ 김 1봉 · 김치 · 들기름 1작은술 · 물 2L</div>
 <div style="margin-top:10px;padding-top:10px;border-top:1px solid var(--line)"><div class="lbl">곁들임 반찬 (소량)</div><div>${b[0]}</div>${tags(b[1])}</div></div>`;
-document.getElementById('startIn').onchange=async e=>{start=e.target.value;try{await window.storage.set('mealplan-start',start,false)}catch(_){}renderAll()};
-document.getElementById('resetBtn').onclick=async()=>{if(!confirm('오늘을 1일차로 초기화할까요? (30일 로테이션이 1회차부터 다시 시작)'))return;start=fmt(now);try{await window.storage.set('mealplan-start',start,false)}catch(_){}renderAll()}}
+document.getElementById('startIn').onchange=async e=>{start=e.target.value;try{await window.storage.set('mealplan-start',start,false);await window.storage.set('mealplan-start-manual','1',false)}catch(_){}renderAll()};
+document.getElementById('resetBtn').onclick=async()=>{if(!confirm('오늘을 1일차로 초기화할까요? (30일 로테이션이 1회차부터 다시 시작)'))return;start=fmt(now);try{await window.storage.set('mealplan-start',start,false);await window.storage.set('mealplan-start-manual','1',false)}catch(_){}renderAll()}}
 function renderPlan(){const now=new Date();now.setHours(0,0,0,0);const i=dayInfo(now);const c=Math.max(0,i.c);const p=order(c);const prev=c>0?order(c-1):[];
 let h=`<div class="card"><div class="m">${c+1}회차 순서. ${c>0?'<b>NEW</b> = 직전 회차에 없던 메뉴 ('+p.filter(k=>!prev.includes(k)).length+'개)':'1회차는 메뉴 1~30번 순서대로'}</div></div><div class="card"><table><tr><th>Day</th><th>점심 (배달)</th><th>저녁 (요리)</th></tr>`;
 for(let q=0;q<CYC;q++){const k=p[q];const dt=new Date(start+'T00:00:00');dt.setDate(dt.getDate()+c*CYC+q);const on=q===i.p&&i.d>=0;const nw=c>0&&!prev.includes(k);
@@ -205,5 +206,5 @@ document.getElementById('dlIcs').onclick=()=>{const t=makeIcs();const a=document
 document.getElementById('showIcs').onclick=()=>{const ta=document.getElementById('icsText');ta.value=makeIcs();ta.classList.toggle('hide')};
 document.querySelectorAll('nav button').forEach(b=>b.onclick=()=>{document.querySelectorAll('nav button').forEach(x=>x.classList.remove('on'));b.classList.add('on');document.querySelectorAll('main section').forEach(s=>s.classList.add('hide'));document.getElementById(b.dataset.v).classList.remove('hide')});
 function renderAll(){renderToday();renderPlan();renderShop();renderPool()}
-(async()=>{try{const r=await window.storage.get('mealplan-start',false);if(r&&r.value)start=r.value}catch(_){}renderAll()})();
+(async()=>{try{const m=await window.storage.get('mealplan-start-manual',false);if(m&&m.value==='1'){const r=await window.storage.get('mealplan-start',false);if(r&&r.value)start=r.value}}catch(_){}renderAll()})();
 </script></body></html>
