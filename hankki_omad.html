@@ -1,0 +1,575 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>한 끼 · 1일1식 영양 로테이션</title>
+<style>
+:root{--bg:#f5f5f2;--card:#fff;--ink:#151514;--sub:#6e6e69;--mute:#a5a59f;--line:#e8e7e2;--soft:#f0efea;--acc:#0e7a5b;--acc-s:#e2f1eb;--warn:#b25e09;--warn-s:#fbf1e3;--bad:#c0392b;--r:18px;--sh:0 1px 2px rgba(20,20,10,.04),0 6px 20px rgba(20,20,10,.04);--cF:#2563eb;--cB:#c2410c;--cL:#a16207;--cP:#db2777;--cS:#0891b2;--cW:#64748b;--cV:#65a30d}
+@media (prefers-color-scheme:dark){:root{--bg:#0e0e0d;--card:#171716;--ink:#f1f1ee;--sub:#a3a39d;--mute:#6a6a65;--line:#2a2a27;--soft:#20201e;--acc:#3ccf9f;--acc-s:#12302a;--warn:#f2a54a;--warn-s:#33260f;--bad:#ff7a6b;--sh:none}}
+*{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+html{-webkit-text-size-adjust:100%}
+body{margin:0;background:var(--bg);color:var(--ink);font:15px/1.55 -apple-system,BlinkMacSystemFont,"Apple SD Gothic Neo",Pretendard,"Noto Sans KR","Malgun Gothic",sans-serif;letter-spacing:-.01em;word-break:keep-all;-webkit-font-smoothing:antialiased}
+button,input,select{font:inherit;color:inherit}
+button{background:none;border:0;padding:0;cursor:pointer;text-align:inherit}
+.hide{display:none!important}
+.wrap{max-width:1120px;margin:0 auto;padding:0 16px}
+.top{position:sticky;top:0;z-index:20;background:var(--bg)}
+.top .wrap{display:flex;align-items:center;gap:12px;height:60px}
+.brand{display:flex;flex-direction:column;line-height:1.25;margin-right:auto}
+.brand b{font-size:17px;letter-spacing:-.02em}
+.brand span{font-size:12.5px;color:var(--sub)}
+.ib{width:38px;height:38px;border-radius:12px;display:grid;place-items:center;color:var(--sub);flex:none}
+.ib:hover{background:var(--soft);color:var(--ink)}
+.ib svg{width:20px;height:20px}
+.ib[disabled]{opacity:.3;pointer-events:none}
+.tabs{display:flex;gap:4px}
+.tabs button{display:flex;align-items:center;gap:6px;padding:8px 12px;border-radius:10px;color:var(--sub);font-size:14px;font-weight:600}
+.tabs button svg{width:18px;height:18px}
+.tabs button[aria-current=page]{color:var(--ink);background:var(--card);box-shadow:var(--sh)}
+main{padding-bottom:48px}
+.card{background:var(--card);border:1px solid var(--line);border-radius:var(--r);padding:20px;box-shadow:var(--sh)}
+.stack{display:grid;gap:12px;align-content:start}
+.today{display:grid;gap:12px}
+@media(min-width:960px){.today{grid-template-columns:minmax(0,1.08fr) minmax(0,1fr);gap:16px;align-items:start}.today>.full{grid-column:1/-1}.today .side{position:sticky;top:72px}}
+.lbl{font-size:12px;font-weight:600;color:var(--sub)}
+.sub{color:var(--sub);font-size:13px}
+.hd{display:flex;align-items:baseline;justify-content:space-between;gap:8px;margin-bottom:14px}
+.hd h3{margin:0;font-size:16px;letter-spacing:-.02em}
+.wkh{display:flex;align-items:center;gap:4px;margin:6px 0 10px}
+.wkh h3{margin:0 auto 0 2px;font-size:14px;font-weight:650;font-variant-numeric:tabular-nums}
+.wkh .ib{width:34px;height:34px}
+.chipbtn{font-size:12.5px;font-weight:600;padding:6px 11px;border-radius:999px;background:var(--card);border:1px solid var(--line);margin-right:4px}
+.strip{display:grid;grid-template-columns:repeat(7,minmax(0,1fr));gap:6px}
+.day{display:flex;flex-direction:column;align-items:center;gap:1px;padding:8px 0 10px;border-radius:14px;background:var(--card);border:1px solid var(--line)}
+.day .w{font-size:11px;color:var(--sub);font-weight:600}
+.day .n{font-size:17px;font-weight:650;font-variant-numeric:tabular-nums}
+.day i{width:6px;height:6px;border-radius:50%;background:var(--c);margin-top:3px}
+.day.today .n{color:var(--acc)}
+.day.on{background:var(--ink);border-color:var(--ink);color:var(--bg)}
+.day.on .w,.day.on .n{color:inherit}.day.on .w{opacity:.65}
+.row1{display:flex;align-items:center;gap:6px;flex-wrap:wrap}
+.cat{display:inline-flex;align-items:center;gap:6px;font-size:12.5px;font-weight:600;color:var(--sub);margin-right:auto}
+.cat::before{content:"";width:8px;height:8px;border-radius:50%;background:var(--c)}
+.badge{font-size:11px;font-weight:600;padding:2px 8px;border-radius:999px;background:var(--soft);color:var(--sub);white-space:nowrap}
+.badge.w{background:var(--warn-s);color:var(--warn)}.badge.a{background:var(--acc-s);color:var(--acc)}
+.meal h2{font-size:clamp(24px,5.6vw,30px);line-height:1.22;letter-spacing:-.03em;margin:6px 0 6px;font-weight:750}
+.meal .tip{margin:0 0 16px;color:var(--sub)}
+.req{display:flex;align-items:center;gap:12px;background:var(--soft);border-radius:14px;padding:12px 12px 12px 14px}
+.req p{margin:2px 0 0;font-size:14px;line-height:1.45}
+.btn{display:inline-flex;align-items:center;justify-content:center;gap:6px;height:40px;padding:0 16px;border-radius:12px;background:var(--ink);color:var(--bg);font-weight:650;font-size:14px;white-space:nowrap}
+.btn.sm{height:34px;padding:0 12px;font-size:13px;border-radius:10px}
+.btn.gh{background:var(--card);color:var(--ink);border:1px solid var(--line)}
+.kv{display:grid;grid-template-columns:52px 1fr;gap:8px 12px;font-size:13.5px;margin:16px 0}
+.kv dt{color:var(--sub)}.kv dd{margin:0}
+.lnk{color:var(--acc);font-weight:600;font-size:13px;margin-left:6px}
+.chips{display:flex;flex-wrap:wrap;gap:6px}
+.chip{display:inline-flex;align-items:center;gap:6px;font-size:12px;padding:3px 10px;border-radius:999px;border:1px solid var(--line);white-space:nowrap}
+.chip.x{border-style:dashed;color:var(--sub)}
+.chip.cc::before{content:"";width:7px;height:7px;border-radius:50%;background:var(--c)}
+.bk{margin-top:18px;display:grid;gap:8px}
+.bkr{display:grid;grid-template-columns:8px minmax(0,1fr) auto;gap:10px;align-items:center;padding:10px 10px 10px 12px;border:1px solid var(--line);border-radius:14px}
+.bkr>i{width:8px;height:8px;border-radius:50%;background:var(--c)}
+.bkr b{display:block;font-size:14px;font-weight:650}
+.bkr small{display:block;font-size:12px;color:var(--sub);line-height:1.45}
+.pct{font-variant-numeric:tabular-nums;color:var(--acc);font-weight:650}
+.foot{display:flex;justify-content:flex-end;align-items:center;gap:6px;margin-top:14px;padding-top:12px;border-top:1px solid var(--line);flex-wrap:wrap}
+.alts{display:grid;gap:6px;margin-top:12px}
+.alt{display:flex;align-items:center;gap:10px;padding:10px 12px;border-radius:12px;border:1px solid var(--line);width:100%}
+.alt:hover{background:var(--soft)}
+.alt i{width:8px;height:8px;border-radius:50%;background:var(--c);flex:none}
+.alt b{font-weight:600;font-size:14px}.alt small{display:block;color:var(--sub);font-size:12px}
+.snack h3{margin:8px 0 4px;font-size:18px;letter-spacing:-.02em}
+.snack p{margin:0;font-size:13.5px;color:var(--sub)}
+.o3{padding:14px;border-radius:14px;background:var(--soft);margin-bottom:12px}
+.o3 .v{display:flex;align-items:baseline;gap:6px;margin:4px 0 8px;flex-wrap:wrap}
+.o3 .v b{font-size:24px;letter-spacing:-.02em;font-variant-numeric:tabular-nums}
+.bar{position:relative;height:6px;border-radius:3px;background:var(--line);overflow:hidden}
+.bar b{position:absolute;top:0;bottom:0;left:0;border-radius:3px;background:var(--bc,var(--acc))}
+.bar b.s{opacity:.3}
+.gs{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:8px}
+.g{padding:12px;border-radius:14px;border:1px solid var(--line)}
+.g .n{font-size:12.5px;color:var(--sub);font-weight:600}
+.g .v{font-size:24px;font-weight:750;letter-spacing:-.03em;font-variant-numeric:tabular-nums;line-height:1.2;margin:2px 0 1px}
+.g .v span{font-size:13px;font-weight:600}
+.g small{display:block;font-size:11px;color:var(--sub);margin-bottom:8px}
+.legend{display:flex;gap:14px;align-items:center;font-size:12px;color:var(--sub);margin:12px 2px 0;flex-wrap:wrap}
+.legend span{display:inline-flex;align-items:center;gap:6px}
+.dot{width:10px;height:10px;border-radius:50%;background:var(--line);display:block;margin:auto}
+.dot.m{background:var(--acc)}.dot.s{background:transparent;box-shadow:inset 0 0 0 2px var(--acc)}
+.legend .dot{margin:0}
+details>summary{list-style:none;cursor:pointer}
+details>summary::-webkit-details-marker{display:none}
+.nts{margin-top:14px;border-top:1px solid var(--line)}
+.nts>summary{padding:12px 2px 6px;font-size:13.5px;font-weight:600;display:flex;justify-content:space-between}
+.nts>summary::after{content:"＋";color:var(--sub)}.nts[open]>summary::after{content:"－"}
+.ng{display:grid;grid-template-columns:88px repeat(7,minmax(0,1fr)) 40px;align-items:stretch}
+.ng>span{display:flex;align-items:center;justify-content:center;min-height:34px}
+.ng>span.cur{background:var(--soft)}
+.ng .nn{justify-content:flex-start;font-size:12.5px;font-weight:600}
+.ng .fr{justify-content:flex-end;font-size:12px;font-variant-numeric:tabular-nums;color:var(--warn);font-weight:650}
+.ng .fr.ok{color:var(--acc)}.ng .fr.sn{color:var(--sub)}
+.ng.hdr>span{font-size:11px;color:var(--sub);min-height:26px}
+.nr>summary{border-top:1px solid var(--line)}
+.nd{padding:6px 2px 12px;font-size:13px;color:var(--sub)}
+.nd p{margin:3px 0}.nd b{color:var(--ink);font-weight:600}
+.habit{font-size:12.5px;color:var(--sub);text-align:center;margin:8px 0 0}
+.wl{padding:4px 20px}
+.wi{display:grid;grid-template-columns:44px 3px minmax(0,1fr) auto;gap:14px;align-items:center;width:100%;padding:14px 0;border-top:1px solid var(--line)}
+.wi:first-child{border-top:0}
+.wi .wd{display:flex;flex-direction:column;line-height:1.25}
+.wi .wd b{font-size:15px}.wi .wd small{font-size:12px;color:var(--sub);font-variant-numeric:tabular-nums}
+.wi>i{align-self:stretch;border-radius:2px;background:var(--c)}
+.wi .wm{min-width:0}
+.wi .wm b{display:block;font-size:15px;font-weight:650;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.wi .wm small{display:block;font-size:12.5px;color:var(--sub);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.wi.on .wd b{color:var(--acc)}
+.wgrid{display:grid;gap:12px}
+@media(min-width:960px){.wgrid{grid-template-columns:minmax(0,1.6fr) minmax(0,1fr);align-items:start}}
+.kpi{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-top:12px}
+.kpi div{padding:10px;border-radius:12px;background:var(--soft)}
+.kpi b{display:block;font-size:18px;font-variant-numeric:tabular-nums}
+.kpi small{font-size:11.5px;color:var(--sub)}
+.mf{display:flex;gap:8px;margin:8px 0 10px}
+.mf input,.mf select{height:42px;border-radius:12px;border:1px solid var(--line);background:var(--card);padding:0 12px;font-size:15px;min-width:0}
+.mf input{flex:1}
+.seg{display:flex;gap:6px;overflow-x:auto;padding-bottom:10px;scrollbar-width:none}
+.seg::-webkit-scrollbar{display:none}
+.seg button{flex:none;height:34px;padding:0 13px;border-radius:999px;border:1px solid var(--line);background:var(--card);font-size:13px;font-weight:600;color:var(--sub)}
+.seg button.on{background:var(--ink);border-color:var(--ink);color:var(--bg)}
+.list{padding:4px 18px}
+.lh{font-size:12px;color:var(--sub);padding:12px 0 8px}
+.mi{border-top:1px solid var(--line)}
+.mi>summary{display:grid;grid-template-columns:26px minmax(0,1fr) auto;gap:10px;align-items:center;padding:12px 0}
+.mi .no{font-size:12px;color:var(--mute);font-variant-numeric:tabular-nums}
+.mi .mn b{display:block;font-weight:600;font-size:15px}
+.mi .mn small{display:flex;align-items:center;gap:6px;font-size:12px;color:var(--sub)}
+.mi .mn small::before{content:"";width:7px;height:7px;border-radius:50%;background:var(--c);flex:none}
+.mi .mt{font-size:12px;color:var(--sub);text-align:right}
+.md{padding:0 0 16px 36px;display:grid;gap:10px;font-size:13.5px}
+.gg{display:grid;gap:12px;margin-top:8px}
+@media(min-width:960px){.gg{grid-template-columns:1fr 1fr;align-items:start}}
+.gg h3{margin:0 0 12px;font-size:16px}
+.gg ul{margin:0;padding-left:18px;display:grid;gap:7px;font-size:14px}
+.gg li::marker{color:var(--mute)}
+.iv{display:grid;gap:8px}
+.iv>div{display:grid;grid-template-columns:40px 1fr;column-gap:12px;padding:10px 12px;border-radius:12px;background:var(--soft)}
+.iv b{grid-row:span 2;font-size:15px}
+.iv span{font-size:14px;font-weight:600}
+.iv small{font-size:12px;color:var(--sub)}
+.note{margin-top:12px;padding:14px;border-radius:12px;border:1px solid var(--line);font-size:13.5px}
+.note p{margin:6px 0 0;color:var(--sub)}
+.pat{display:grid;grid-template-columns:repeat(7,minmax(0,1fr));gap:6px;text-align:center;font-size:11.5px;line-height:1.3}
+.pat div{padding:8px 2px;border-radius:10px;background:var(--soft)}
+.pat b{display:block;font-size:13px}
+.pat i{display:block;width:8px;height:8px;border-radius:50%;margin:6px auto 4px;background:var(--c)}
+.sheet{position:fixed;inset:0;z-index:60;display:flex;align-items:flex-end;justify-content:center}
+.sheet .bd{position:absolute;inset:0;background:rgba(0,0,0,.36)}
+.sheet .sc{position:relative;width:100%;max-width:520px;max-height:90vh;overflow:auto;background:var(--card);border-radius:22px 22px 0 0;padding:20px 20px calc(20px + env(safe-area-inset-bottom))}
+@media(min-width:760px){.sheet{align-items:center}.sheet .sc{border-radius:22px}}
+.form{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin:16px 0}
+.form label{display:grid;gap:4px;font-size:12px;color:var(--sub);font-weight:600}
+.form input[type=time],.form select{height:42px;border-radius:12px;border:1px solid var(--line);background:var(--bg);padding:0 10px;font-size:15px;color:var(--ink)}
+.form .ck{display:flex;align-items:center;gap:8px;font-size:14px;color:var(--ink);grid-column:1/-1}
+.steps{margin:16px 0 0;padding-left:18px;font-size:13px;color:var(--sub);display:grid;gap:4px}
+.toast{position:fixed;left:50%;bottom:28px;transform:translate(-50%,12px);opacity:0;pointer-events:none;background:var(--ink);color:var(--bg);padding:10px 16px;border-radius:999px;font-size:14px;font-weight:600;transition:.2s;z-index:70;max-width:90vw;text-align:center}
+.toast.on{opacity:1;transform:translate(-50%,0)}
+@media(max-width:759px){
+.tabs{position:fixed;left:0;right:0;bottom:0;z-index:30;background:var(--card);border-top:1px solid var(--line);padding:6px 8px calc(6px + env(safe-area-inset-bottom));display:grid;grid-template-columns:repeat(4,1fr);gap:0}
+.tabs button{flex-direction:column;gap:2px;font-size:11px;padding:6px 0;justify-content:center}
+.tabs button svg{width:22px;height:22px}
+.tabs button[aria-current=page]{background:none;box-shadow:none}
+main{padding-bottom:calc(92px + env(safe-area-inset-bottom))}
+.toast{bottom:calc(92px + env(safe-area-inset-bottom))}
+}
+@media(max-width:520px){.card{padding:16px}.wl,.list{padding:4px 16px}.mi .mt{display:none}.md{padding-left:0}.g{padding:10px}.g .v{font-size:21px}}
+</style>
+</head>
+<body>
+<header class="top"><div class="wrap">
+<div class="brand"><b>한 끼</b><span id="hd"></span></div>
+<nav class="tabs" id="tabs"></nav>
+<button class="ib" data-sheet aria-label="캘린더 알림" id="bell"></button>
+</div></header>
+<main class="wrap">
+<section id="v-today"></section>
+<section id="v-week" class="hide"></section>
+<section id="v-menu" class="hide"></section>
+<section id="v-guide" class="hide"></section>
+</main>
+<div id="sheet" class="sheet hide"><div class="bd" data-close></div>
+<div class="sc" role="dialog" aria-label="캘린더 알림">
+<div class="hd"><h3>캘린더 알림 (.ics)</h3><button class="ib" data-close aria-label="닫기" id="xbtn"></button></div>
+<p class="sub" style="margin:0">아이폰·갤럭시 기본 캘린더에 매일 메뉴, 요청사항, 대체 메뉴가 알림으로 뜹니다. 앱 설치 없음.</p>
+<div class="form">
+<label>기간<select id="icN"><option value="14">2주</option><option value="30" selected>30일</option><option value="60">60일</option><option value="90">90일</option></select></label>
+<label>점심 알림<input id="icL" type="time" value="11:00"></label>
+<label class="ck"><input id="icS" type="checkbox" checked> 간식 알림도 받기</label>
+<label>간식 알림<input id="icT" type="time" value="15:30"></label>
+</div>
+<div style="display:flex;gap:8px;flex-wrap:wrap"><button class="btn" data-dl>.ics 다운로드</button><button class="btn gh" data-ct>텍스트 복사</button></div>
+<ol class="steps"><li>Safari(또는 크롬)에서 이 페이지를 열고 다운로드 — 미리보기에서 막히면 새 창에서 열기</li><li>파일을 탭 → 모두 추가 → 새 캘린더 "식단"을 만들어 넣기</li><li>메뉴를 바꾸거나 기간이 끝나면 "식단" 캘린더를 지우고 다시 내보내기</li></ol>
+</div></div>
+<div id="toast" class="toast" role="status"></div>
+<script>
+const EPOCH='2026-01-05',REPEAT=21,RAW_OFF=[6,7,8,9],O3T=3.5,SALT_MAX=3;
+const CAT={F:{n:'등푸른생선',c:'var(--cF)'},B:{n:'소고기',c:'var(--cB)'},L:{n:'양고기',c:'var(--cL)'},P:{n:'돼지고기',c:'var(--cP)'},S:{n:'조개·해산물',c:'var(--cS)'},W:{n:'흰살생선',c:'var(--cW)'},V:{n:'두부·계란·채소',c:'var(--cV)'}};
+const SHOP={sal:'샐러드·포케',gri:'생선구이집',raw:'횟집',eel:'장어집',bbq:'고깃집',soup:'국·탕집',shabu:'샤브·전골',west:'양식',bossam:'보쌈집',sea:'해물찜·탕',hansik:'한식 정식',lamb:'양고기집',yuk:'육회집',don:'덮밥집'};
+const UB={3:'어디서나',2:'흔함',1:'지역 따라'};
+const SLOT=[['F'],['B','L'],['S'],['F'],['P'],['S','W'],['V','W','B']];
+const NUT={
+o3:{n:'오메가3',g:4,w:1.3,why:'EPA·DHA. 혈중 중성지방과 혈관 염증을 낮추고, DHA는 망막의 주성분.',src:'고등어·연어·삼치·장어'},
+d:{n:'비타민D',g:7,w:1.2,why:'혈관·면역·근육 기능. 실내 근무자는 대부분 부족.',src:'등푸른생선·갈치·장어·계란 노른자'},
+lut:{n:'루테인',g:3,w:1.2,why:'황반 색소 밀도를 유지해 화면 청색광·눈 피로로부터 보호.',src:'케일·시금치·깻잎·계란 노른자'},
+a:{n:'비타민A',g:7,w:.8,why:'각막·야간 시력, 피부 재생. 간에 저장되므로 매일 필요 없음.',src:'장어·잎채소(상추·깻잎)·당근'},
+c:{n:'비타민C',g:3,w:1,why:'콜라겐 합성(피부 탄력·혈관벽)과 항산화. 열에 약해 생채소가 유리.',src:'파프리카·키위·브로콜리·생채소'},
+e:{n:'비타민E',g:4,w:1,why:'세포막 지질 산화를 막는 대표 항산화 비타민. 피부 노화.',src:'아몬드·아보카도·연어·올리브유'},
+zn:{n:'아연',g:4,w:1.1,why:'모발·피부 재생, 망막의 비타민A 대사. 저장고가 작아 자주 필요.',src:'굴·소고기·조개·양고기'},
+se:{n:'셀레늄',g:7,w:.9,why:'간 해독 효소(글루타치온 퍼옥시다제)의 핵심, 항산화.',src:'해산물·생선·브라질너트'},
+fe:{n:'철',g:7,w:.7,why:'산소 운반·모발. 성인 남성은 과잉 시 간에 쌓이니 주 1~2회면 충분.',src:'소고기·꼬막·홍합·양고기'},
+b12:{n:'비타민B12',g:7,w:.6,why:'신경·적혈구. 엽산과 함께 호모시스테인(혈관 손상 지표)을 낮춤.',src:'조개·소고기·생선'},
+fol:{n:'엽산',g:3,w:1,why:'호모시스테인을 낮춰 혈관 보호, 세포 재생. 열에 약함.',src:'잎채소·청국장·아보카도'},
+cho:{n:'콜린',g:3,w:1.1,why:'간에서 지방을 내보내는 데 필요. 부족하면 지방간 위험.',src:'계란·소고기'},
+km:{n:'칼륨·마그네슘',g:2,w:1,why:'나트륨 배출·혈압 조절·심장 리듬. 거의 저장되지 않음.',src:'잎채소·아보카도·견과·미역'},
+fib:{n:'식이섬유',g:2,w:1,why:'LDL 콜레스테롤과 식후 혈당을 낮추고 장-간 건강을 지킴.',src:'채소·버섯·해조류·콩'},
+ca:{n:'칼슘',g:3,w:1,why:'뼈·근육·신경. 한국 성인의 대표적인 부족 영양소.',src:'모짜렐라·페타·요거트·두부·뼈째 생선'},
+k:{n:'비타민K',g:4,w:.9,why:'응고 기능, K2는 칼슘이 혈관벽에 쌓이는 것을 막는 데 관여.',src:'잎채소·청국장·치즈'},
+i:{n:'요오드',g:7,w:.4,why:'갑상선·대사. 한국 식단은 과잉이 흔해 주 1~2회로 충분.',src:'미역·조개·해산물'}};
+const NK=Object.keys(NUT);
+const GROUPS=[{n:'눈',ns:['o3','lut','a','zn']},{n:'피부·모발',ns:['c','e','zn','fe']},{n:'간',ns:['cho','se','fib']},{n:'심장·혈관',ns:['o3','km','fib','k','fol']},{n:'항노화',ns:['e','c','se','d']},{n:'기본',ns:['ca','d','b12','i']}];
+/* [id, 분류, 가게유형, 흔한정도(3어디서나~1지역), 이름, 검색어, 주문팁, 요청사항, 원산지, 영양태그, EPA+DHA(g), 플래그, 제철월, 기타] */
+const D=[
+['f1','F','sal',3,'연어 포케','연어 포케','밥 대신 케일·시금치 샐러드 베이스, 연어 추가','밥 대신 샐러드 베이스로 부탁드려요. 소스는 따로 주세요.','노르웨이·칠레산이 일반적','o3 d b12 se e lut a k fol fib km',2.0,'raw',0,'아스타잔틴'],
+['f2','F','gri',3,'고등어구이 정식','고등어구이','공기밥 빼고 나물 반찬 위주로','공기밥은 빼주세요. 김치는 안 주셔도 돼요.','노르웨이산·국내산 모두 무난','o3 d b12 se',2.5,'grill',0,''],
+['f3','F','gri',2,'삼치구이 정식','삼치구이','공기밥 빼고 쌈채소가 있으면 추가','공기밥은 빼주세요. 김치는 안 주셔도 돼요.','국내산이 일반적','o3 d b12 se',1.3,'grill',0,''],
+['f4','F','west',2,'연어 스테이크 + 샐러드','연어 스테이크','빵·감자·파스타 대신 케일·시금치 샐러드','빵·감자 대신 샐러드로 부탁드려요. 드레싱은 따로 주세요.','노르웨이·칠레산이 일반적','o3 d b12 se e lut a k fol fib km c',2.5,'',0,'아스타잔틴'],
+['f5','F','raw',3,'연어회 (사시미)','연어회','초밥 말고 회로, 양파·무순 듬뿍','초밥 말고 회로만 부탁드려요. 양파 많이 주세요.','노르웨이·칠레산이 일반적','o3 d b12 se e',2.5,'raw',0,'아스타잔틴'],
+['f6','F','eel',1,'장어 소금구이','장어구이','양념 대신 소금구이, 생강채·쌈채소 추가','양념 말고 소금구이로 부탁드려요. 쌈채소 넉넉히 주세요.','국내산(고창·영암 등) 표기 꼭 확인 — 수입산 많음','o3 a d e b12 k fol',1.8,'grill',0,''],
+['f7','F','raw',2,'방어회','방어회','깻잎·쌈채소와 함께, 초장보다 간장·와사비','쌈채소 넉넉히 부탁드려요.','제주·동해 국내산이 일반적','o3 d b12 se a k',2.5,'raw',[11,12,1,2],''],
+['f8','F','gri',1,'전어구이','전어구이','뼈째 먹으면 칼슘까지, 공기밥 빼기','공기밥은 빼주세요.','국내산이 일반적','o3 d b12 se ca',1.2,'grill',[9,10],''],
+['f9','F','gri',2,'갈치구이','갈치구이','조림보다 구이, 공기밥 빼기','공기밥은 빼주세요. 김치는 안 주셔도 돼요.','제주·국내산 표기 확인 — 수입산 많음','o3 d b12 se',1.0,'grill',0,''],
+['f10','F','raw',2,'참치회 (뱃살 포함)','참치회','뱃살 포함 모둠, 밥·초밥 빼고 김·쌈채소','밥은 빼주세요. 김·쌈채소 넉넉히 부탁드려요.','원양산이 일반적','o3 d b12 se',1.2,'raw',0,''],
+['f11','F','hansik',2,'고등어 무조림','고등어조림','김치조림 말고 무조림, 국물은 조금만','공기밥은 빼주세요.','노르웨이산·국내산 모두 무난','o3 d b12 se',2.0,'salt',0,''],
+['f12','F','raw',2,'과메기','과메기','배추·생미역·김·쪽파에 싸서, 초장은 조금','쌈채소·미역 넉넉히 부탁드려요.','포항(구룡포) 국내산이 일반적','o3 d b12 se i k',3.0,'raw',[11,12,1,2],''],
+['f13','F','don',3,'연어 사케동 (밥 1/3)','사케동','밥은 1/3만, 연어 추가, 양파 듬뿍','밥은 조금만 주세요. 연어 추가 부탁드려요.','노르웨이·칠레산이 일반적','o3 d b12 se e',2.0,'raw',0,''],
+['f14','F','gri',3,'생선구이 모둠 (고등어·삼치·임연수)','생선구이 모둠','공기밥 빼고 생선만 넉넉히','공기밥은 빼주세요. 김치는 안 주셔도 돼요.','고등어 노르웨이산·국내산 무난','o3 d b12 se',1.8,'grill',0,''],
+['b1','B','shabu',2,'소고기 샤브샤브','샤브샤브','칼국수·죽 사리 빼고 채소·버섯 추가','칼국수·죽 사리는 빼주세요. 채소 많이 부탁드려요.','호주·미국산이 일반적','fe zn b12 k km fib',0,'salt',0,''],
+['b2','B','bbq',2,'소고기 등심·채끝 구이','소고기 구이','쌈채소·파채 추가, 공기밥·냉면 빼기','공기밥은 빼주세요. 쌈채소 넉넉히 부탁드려요.','한우·호주·미국산 표기 확인','fe zn b12 cho a k fol',0,'grill',0,''],
+['b3','B','sal',3,'스테이크 샐러드','스테이크 샐러드','케일·시금치 샐러드, 빵·감자 빼기','빵·감자는 빼주세요. 드레싱은 따로 주세요.','호주·미국산이 일반적','fe zn b12 e lut a k fol fib km c',0,'',0,''],
+['b4','B','soup',3,'갈비탕','갈비탕','당면·공기밥 빼기, 국물은 1/3만','당면·공기밥은 빼주세요.','호주·미국산이 일반적','fe zn b12',0,'salt',0,'콜라겐'],
+['b5','B','yuk',2,'한우 육회 (단품)','육회','비빔밥 말고 육회 단품, 노른자 포함','노른자 함께 부탁드려요.','한우 표기 확인','fe zn b12 cho',0,'raw',0,''],
+['b6','B','bbq',2,'생갈비살 구이','갈비살','양념 없이 소금구이, 쌈채소 추가','양념 없이 소금구이로 부탁드려요. 쌈채소 넉넉히 주세요.','호주·미국산이 일반적','fe zn b12 a k fol',0,'grill',0,''],
+['b7','B','bbq',2,'차돌박이 숙주볶음','차돌 숙주','기름진 부위라 쌈채소·양파와 함께','쌈채소가 있으면 넉넉히 부탁드려요.','미국·호주산이 일반적','fe zn b12',0,'',0,''],
+['b8','B','soup',2,'소고기 미역국 정식','소고기 미역국','공기밥 빼기, 미역·고기 건더기 위주','공기밥은 빼주세요.','미역은 국내산(완도·기장)이 일반적','i fe zn b12 km fib',0,'salt',0,''],
+['b9','B','shabu',2,'소고기 버섯전골','버섯전골','당면·칼국수 사리 빼고 버섯 추가','당면·사리는 빼주세요.','호주·미국산이 일반적','fe zn b12 fib km',0,'salt',0,''],
+['b10','B','soup',2,'소고기 수육 (양지·사태)','소고기 수육','곰탕집 수육 단품, 부추·파채 곁들이기','부추나 파채가 있으면 넉넉히 부탁드려요.','호주·미국산이 일반적','fe zn b12 k',0,'',0,'콜라겐'],
+['b11','B','west',2,'안심 스테이크 + 구운 채소','안심 스테이크','감자·빵 대신 구운 채소·샐러드','감자·빵 대신 채소로 부탁드려요.','호주·미국산이 일반적','fe zn b12 cho k fol',0,'grill',0,''],
+['b12','B','soup',3,'육개장 (당면 빼기)','육개장','당면·공기밥 빼고 고사리·대파 위주, 국물 1/3','당면·공기밥은 빼주세요.','고사리는 국산 표기면 더 좋음','fe zn b12 fib k',0,'salt',0,''],
+['l1','L','lamb',1,'양갈비 구이','양갈비','프렌치랙, 구운 채소·샐러드 곁들이기','구운 채소가 있으면 추가 부탁드려요.','호주·뉴질랜드산이 일반적','fe zn b12 se',0,'grill',0,''],
+['l2','L','lamb',2,'양꼬치','양꼬치','꼬치만 — 볶음밥·꿔바로우 빼고 오이무침','','호주·뉴질랜드산이 일반적','fe zn b12',0,'grill',0,''],
+['p1','P','bossam',3,'보쌈','보쌈','보쌈김치·막국수 빼고 쌈채소 추가','보쌈김치·막국수는 빼주세요. 쌈채소 넉넉히 부탁드려요.','국내산이 일반적','zn b12 a k fol fib',0,'',0,'B1'],
+['p2','P','bbq',3,'삼겹살 구이','삼겹살','쌈채소·파채·구운 마늘 추가','쌈채소·마늘 넉넉히 부탁드려요. 공기밥은 빼주세요.','국내산·수입산 모두 무난','b12 a k fol fib',0,'grill',0,'B1'],
+['p3','P','sal',2,'목살 스테이크 + 샐러드','목살 스테이크','빵·감자 대신 케일·시금치 샐러드','빵·감자 대신 샐러드로 부탁드려요.','국내산·스페인산 등','zn b12 e lut a k fol fib km c',0,'',0,'B1'],
+['p4','P','bbq',2,'항정살 구이','항정살','쌈채소·구운 버섯 추가','쌈채소 넉넉히 부탁드려요. 공기밥은 빼주세요.','국내산이 일반적','zn b12 a k fol',0,'grill',0,'B1'],
+['p5','P','soup',3,'뼈해장국 (우거지 많이)','뼈해장국','감자·당면·공기밥 빼기, 국물 1/3','공기밥·당면은 빼주세요. 우거지 많이 부탁드려요.','돼지 등뼈는 수입산이 일반적','zn b12 fib k',0,'salt',0,''],
+['p6','P','hansik',2,'쌈밥 정식 (수육)','쌈밥','제육 말고 수육, 밥 빼고 쌈 위주','수육으로 부탁드려요. 공기밥은 빼고 쌈채소 넉넉히 주세요.','국내산이 일반적','zn b12 lut a k fol fib km c',0,'',0,'B1'],
+['p7','P','soup',3,'돼지국밥 (살코기만)','돼지국밥','순대·내장 빼고 살코기, 밥 빼고 부추 많이','순대·내장 없이 고기만 부탁드려요. 공기밥은 빼고 부추 많이 주세요.','국내산이 일반적','zn b12 k',0,'salt',0,'B1'],
+['s1','S','soup',2,'굴국 (익힌 굴)','굴국밥','밥 빼고 굴 추가 — 생굴은 피하기','공기밥은 빼주세요. 굴 넉넉히 부탁드려요.','통영 등 국내산이 일반적','zn b12 se i fe',0.5,'salt',[10,11,12,1,2,3],''],
+['s2','S','sea',2,'홍합탕','홍합탕','칼국수 사리 빼기','칼국수 사리는 빼주세요.','국내산이 일반적','fe zn b12 se i',0.6,'salt',0,''],
+['s3','S','sea',2,'모둠 조개찜','조개찜','칼국수·라면사리 빼기','사리는 빼주세요.','바지락·백합은 중국산 비중 높음 — 국내산 표기 확인','fe zn b12 se i',0.4,'',0,''],
+['s4','S','sea',1,'전복 버터구이','전복구이','버터구이 또는 찜, 내장(게우)까지','','완도 등 국내산이 일반적','se i km',0.2,'lite',0,''],
+['s5','S','sea',2,'꽃게탕','꽃게탕','라면사리 빼기, 국물 1/3','라면사리는 빼주세요.','국내산 표기 확인 — 중국산 냉동 많음','zn b12 se',0.4,'salt',0,''],
+['s6','S','sea',3,'해물찜 (덜 맵게)','해물찜','덜 맵게, 콩나물·미나리 많이, 당면 빼기','덜 맵게, 당면은 빼고 콩나물 많이 부탁드려요.','원산지 혼재 — 메뉴 상세 표기 확인','zn b12 se i fol fib',0.4,'salt',0,''],
+['s7','S','sea',1,'낙지 연포탕','연포탕','공기밥·칼국수 빼기','공기밥은 빼주세요.','낙지는 중국산 많음 — 국내산 표기 확인','b12 fe se',0.2,'salt lite',0,'타우린'],
+['s8','S','west',2,'새우 감바스','감바스','바게트 빼고 버섯·브로콜리 추가','빵은 빼주세요.','태국·베트남산이 일반적','se i b12 e',0.3,'',0,'아스타잔틴'],
+['s9','S','raw',2,'문어숙회','문어숙회','초장 대신 기름장, 쌈채소와 함께','초장 대신 기름장으로 부탁드려요.','국내산·모리타니산 등','b12 fe zn se',0.2,'',0,'타우린'],
+['s10','S','hansik',2,'꼬막비빔밥 (밥 1/3)','꼬막비빔밥','밥은 1/3만, 꼬막·채소 위주','밥은 조금만 주세요.','벌교·여자만 국내산이 일반적','fe b12 se k',0.2,'lite',0,''],
+['s11','S','sal',3,'새우 아보카도 샐러드','새우 샐러드','케일·시금치 베이스, 드레싱 따로','드레싱은 따로 주세요.','새우는 태국·베트남산이 일반적','se i e lut a k fol fib km c',0.3,'',0,''],
+['s12','S','raw',2,'오징어 숙회','오징어숙회','초장 대신 기름장, 쌈채소·오이와 함께','초장은 조금만 주세요.','국내산·원양산 혼재','b12 se',0.3,'',0,'타우린'],
+['s13','S','sea',1,'가리비찜','가리비찜','칼국수 빼고 버터·마늘','사리는 빼주세요.','국내산(고성 등)이 일반적','b12 se i',0.3,'lite',0,''],
+['s14','S','sea',1,'대하 소금구이','대하구이','머리까지 바삭하게, 쌈채소 곁들이기','','서해 국내산 표기 확인','se i b12',0.3,'grill',[9,10,11],'아스타잔틴'],
+['s15','S','sea',2,'해물탕 (사리 빼기)','해물탕','라면·칼국수 사리 빼고 미나리 많이, 국물 1/3','사리는 빼주세요. 미나리 많이 부탁드려요.','원산지 혼재 — 메뉴 상세 표기 확인','zn b12 se i',0.4,'salt',0,''],
+['w1','W','soup',2,'대구 지리 (맑은탕)','대구탕','맑은탕으로, 미나리·쑥갓 많이, 국물 1/3','맑은탕으로 부탁드려요. 공기밥은 빼주세요.','러시아·국내산이 일반적','se b12 i',0.3,'salt',0,''],
+['w2','W','soup',2,'우럭 매운탕','우럭매운탕','수제비·공기밥 빼고 쑥갓 많이','수제비·공기밥은 빼주세요.','국내산 양식이 일반적','se b12',0.4,'salt',0,''],
+['w3','W','raw',3,'광어·우럭 모둠회','모둠회','깻잎·쌈채소 많이, 초장보다 간장·와사비','쌈채소 넉넉히 부탁드려요.','국내산 양식이 일반적','se b12 a k fol',0.5,'raw',0,''],
+['w4','W','gri',3,'생선구이 정식 (가자미·조기)','생선구이','공기밥 빼고 나물 반찬 위주','공기밥은 빼주세요. 김치는 안 주셔도 돼요.','조기는 국내·중국산 혼재 — 표기 확인','se b12',0.4,'grill',0,''],
+['w5','W','gri',2,'임연수구이','임연수','공기밥 빼기','공기밥은 빼주세요.','러시아·국내산이 일반적','o3 d se b12',1.0,'grill',0,''],
+['w6','W','sea',3,'아귀찜 (덜 맵게)','아귀찜','덜 맵고 덜 달게, 콩나물·미나리 많이','덜 맵고 덜 달게, 콩나물 많이 부탁드려요.','아귀는 국내·중국산 혼재 — 표기 확인','se b12 fib',0.3,'salt',0,''],
+['w7','W','soup',2,'황태해장국 (계란)','황태해장국','공기밥 빼고 계란 추가, 국물 1/3','공기밥은 빼고 계란 풀어주세요.','러시아산 명태를 국내 가공하는 것이 일반적','se b12',0.2,'salt',0,''],
+['w8','W','raw',1,'세꼬시 (뼈째회)','세꼬시','깻잎·쌈채소 많이, 된장 조금','쌈채소 넉넉히 부탁드려요.','국내산이 일반적','ca se b12 a k fol',0.4,'raw',0,'뼈째 칼슘'],
+['v1','V','hansik',3,'해물 순두부찌개 (계란 추가)','순두부찌개','공기밥 빼고 계란·해물 추가, 국물 1/3','공기밥은 빼고 계란 하나 추가 부탁드려요.','콩은 수입산 많음 — 국산콩이면 더 좋음','cho se b12',0.2,'salt lite',0,''],
+['v2','V','hansik',2,'청국장 정식','청국장','공기밥 빼고 나물 반찬 위주','공기밥은 빼주세요. 김치는 안 주셔도 돼요.','국산콩 표기 확인','k fib km fol',0,'salt lite',0,'K2·프로바이오틱'],
+['v3','V','sal',2,'두부 스테이크 샐러드','두부 샐러드','케일·시금치 베이스, 드레싱 따로','드레싱은 따로 주세요.','국산콩이면 더 좋음','ca e lut a k fol fib km c',0,'lite',0,''],
+['v4','V','sal',2,'그릭 샐러드 + 삶은 계란','그릭 샐러드','페타 치즈 포함, 삶은 계란 2개 추가','삶은 계란 추가 부탁드려요. 드레싱은 따로 주세요.','','ca cho e a k c km fib',0,'lite',0,''],
+['v5','V','hansik',2,'산채비빔밥 (밥 1/3 · 계란 2)','산채비빔밥','밥은 1/3만, 계란프라이 2개, 고추장 반만','밥은 조금만, 계란프라이 2개로 부탁드려요.','나물은 국산 표기 확인','lut a k fol fib km cho',0,'lite',0,''],
+['v6','V','sal',2,'카프레제 샐러드 + 삶은 계란','카프레제','생모짜렐라·토마토·루꼴라, 계란 2개 추가','삶은 계란 추가 부탁드려요. 발사믹은 따로 주세요.','','ca cho a k e',0,'lite',0,'라이코펜']
+].map(a=>({id:a[0],cat:a[1],shop:a[2],ub:a[3],name:a[4],kw:a[5],tip:a[6],req:a[7],org:a[8],tags:a[9].split(' '),o3:a[10],raw:a[11].includes('raw'),salt:a[11].includes('salt'),grill:a[11].includes('grill'),lite:a[11].includes('lite'),months:a[12]||null,extra:a[13]}));
+const SN=[
+['n1','키위 2개','c k fib km',0,['키위'],'',0],
+['n2','아몬드 20알','e km fib',0,['무염 생아몬드'],'',0],
+['n3','삶은 계란 2개','cho se b12',0,['계란'],'노른자의 루테인은 흡수율이 높음',1],
+['n4','브라질너트 1알 + 호두 2알','se',0,['브라질너트','호두'],'브라질너트는 하루 2알 이하',0],
+['n5','자연치즈 2장 + 방울토마토','ca',0,['자연치즈','방울토마토'],'라이코펜',1],
+['n6','무가당 플레인 요거트 + 블루베리','ca fib',0,['무가당 플레인 요거트','블루베리'],'안토시아닌·프로바이오틱',1],
+['n7','아보카도 반 개','km e fib fol k',0,['아보카도'],'소금·올리브유 약간',0],
+['n8','생 파프리카 1개','c a',0,['파프리카(빨강·주황)'],'주황 파프리카는 제아잔틴도 풍부',0],
+['n9','블루베리 + 호두 3알','fib',0,['블루베리','호두'],'안토시아닌·ALA',0],
+['n10','당근 스틱 + 100% 땅콩버터','a e fib',0,['당근','100% 땅콩버터'],'당·첨가물 없는 제품',0],
+['n11','무가당 케일 녹즙 1병','lut k fol c',0,['무가당 케일 녹즙'],'루테인을 가장 쉽게 채우는 방법',0],
+['n12','귤 2개','c',[10,11,12,1,2],['귤'],'제철',0],
+['n13','호박씨·해바라기씨 2큰술','e km',0,['호박씨','해바라기씨'],'',0]
+].map(a=>({id:a[0],name:a[1],tags:a[2].split(' '),months:a[3]||null,buy:a[4],extra:a[5],pro:!!a[6]}));
+const $=s=>document.querySelector(s);
+const esc=s=>String(s).replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
+const pad=n=>String(n).padStart(2,'0');
+const WD=['일','월','화','수','목','금','토'];
+function dn(s){const[y,m,d]=s.split('-').map(Number);return Date.UTC(y,m-1,d)/864e5}
+function ds(n){const x=new Date(n*864e5);return x.getUTCFullYear()+'-'+pad(x.getUTCMonth()+1)+'-'+pad(x.getUTCDate())}
+function todayStr(){const x=new Date();return x.getFullYear()+'-'+pad(x.getMonth()+1)+'-'+pad(x.getDate())}
+const E0=dn(EPOCH),tOf=s=>dn(s)-E0,sOf=t=>ds(t+E0);
+const wd=t=>WD[new Date((t+E0)*864e5).getUTCDay()];
+const md=t=>{const s=sOf(t);return Number(s.slice(5,7))+'/'+Number(s.slice(8,10))};
+const monthOf=t=>Number(sOf(t).slice(5,7));
+const nn=n=>NUT[n].n;
+const mr=m=>m[0]+'~'+m[m.length-1]+'월';
+function avail(d,mo){if(d.months&&!d.months.includes(mo))return false;if(d.raw&&RAW_OFF.includes(mo))return false;return true}
+
+/* 스케줄: 날짜 기준 결정적 계산
+   1) 요일 칸(SLOT) 안에서 2) 가장 오래 비어 있는 영양소를 채우는 메뉴 3) 21일 내 중복 금지
+   4) 국물 메뉴는 7일에 최대 3회, 직화 구이 몰림 완화 5) 다른 가게 유형의 대체 메뉴 2개를 같은 기준으로 계산 */
+let OVR={},SCH=null;
+function reset(){SCH={meal:[],snack:[],alts:[],bk:[],lm:{},la:{},ld:{},ls:{}}}
+function urg(map,n,t){const l=map[n];return l===undefined?2:Math.min(2,(t-l)/NUT[n].g)}
+function pickBk(t,m,U,mo,pen,s){
+ const cats=SLOT[t%7],W=m.tags.map(n=>Math.max(.25,U[n])*NUT[n].w),tot=W.reduce((a,b)=>a+b,0)||1;
+ const c=D.filter(d=>d!==m&&cats.includes(d.cat)&&avail(d,mo)).map(d=>{
+  const match=m.tags.reduce((a,n,i)=>a+(d.tags.includes(n)?W[i]:0),0)/tot;
+  const fresh=s.ld[d.id]===undefined||t-s.ld[d.id]>=10;
+  return{d,match,v:match*10+(d.shop!==m.shop?2.5:-4)+d.ub*.8+(fresh?1:-1)+pen(d)*.5+Math.min(d.o3,2.5)*.4}});
+ c.sort((a,b)=>b.v-a.v||D.indexOf(a.d)-D.indexOf(b.d));
+ const out=[];for(const x of c){if(out.length===2)break;if(out.some(y=>y.d.shop===x.d.shop))continue;out.push(x)}
+ return out.map(x=>({d:x.d,match:Math.round(x.match*100),miss:m.tags.filter(n=>!x.d.tags.includes(n))}));
+}
+function build(upto){
+ if(!SCH)reset();const s=SCH;
+ for(let t=s.meal.length;t<=upto;t++){
+  const mo=monthOf(t),cats=SLOT[t%7];
+  const cnt=f=>{let c=0;for(let u=Math.max(0,t-6);u<t;u++)if(s.meal[u].d[f])c++;return c};
+  const nS=cnt('salt'),nG=cnt('grill');
+  const pen=d=>(d.salt?(nS>=SALT_MAX?-50:nS>=SALT_MAX-1?-3:0):0)+(d.grill&&nG>=3?-2:0);
+  const U={};NK.forEach(n=>U[n]=urg(s.lm,n,t));
+  let c=D.filter(d=>cats.includes(d.cat)&&avail(d,mo));
+  const f=c.filter(d=>s.ld[d.id]===undefined||t-s.ld[d.id]>=REPEAT);if(f.length)c=f;
+  const sc=c.map(d=>({d,v:d.tags.reduce((a,n)=>a+U[n]*NUT[n].w,0)+d.o3*.5+(s.ld[d.id]===undefined?8:Math.min(8,(t-s.ld[d.id])/7))+pen(d)}));
+  sc.sort((a,b)=>b.v-a.v||D.indexOf(a.d)-D.indexOf(b.d));
+  const orig=sc.length?sc[0].d:D[0];let m=orig,ovr=false;
+  const o=OVR[sOf(t)];if(o){const od=D.find(x=>x.id===o);if(od&&od!==orig){m=od;ovr=true}}
+  s.meal[t]={d:m,ovr,orig};
+  s.bk[t]=pickBk(t,m,U,mo,pen,s);
+  s.alts[t]=sc.map(x=>x.d).filter(x=>x!==m).slice(0,6);
+  m.tags.forEach(n=>{s.lm[n]=t;s.la[n]=t});s.ld[m.id]=t;
+  const sn=SN.filter(x=>!x.months||x.months.includes(mo)).map(x=>({x,v:x.tags.reduce((a,n)=>a+(m.tags.includes(n)?0:urg(s.la,n,t)*NUT[n].w),0)+(m.lite&&x.pro?3:0)+(s.ls[x.id]===undefined?1:Math.min(1,(t-s.ls[x.id])/14))-(s.ls[x.id]!==undefined&&t-s.ls[x.id]<3?5:0)}));
+  sn.sort((a,b)=>b.v-a.v||SN.indexOf(a.x)-SN.indexOf(b.x));
+  const k=sn[0].x;s.snack[t]=k;k.tags.forEach(n=>s.la[n]=t);s.ls[k.id]=t;
+ }
+}
+function stats(t0){
+ const rows=NK.map(n=>{const cells=[];let mc=0,ac=0;
+  for(let i=0;i<7;i++){const t=t0+i,m=SCH.meal[t].d.tags.includes(n),s=SCH.snack[t].tags.includes(n);cells.push(m?2:s?1:0);if(m)mc++;if(m||s)ac++}
+  return{n,cells,mc,ac,req:Math.ceil(7/NUT[n].g)}});
+ const by={};rows.forEach(r=>by[r.n]=r);
+ const sc=(r,k)=>Math.min(1,r[k]/r.req);
+ const groups=GROUPS.map(g=>({n:g.n,ms:g.ns.reduce((a,n)=>a+sc(by[n],'mc'),0)/g.ns.length,as:g.ns.reduce((a,n)=>a+sc(by[n],'ac'),0)/g.ns.length}));
+ let o3=0,salt=0,grill=0,red=0;
+ for(let i=0;i<7;i++){const d=SCH.meal[t0+i].d;o3+=d.o3;if(d.salt)salt++;if(d.grill)grill++;if('BLP'.includes(d.cat))red++}
+ return{rows,groups,o3,salt,grill,red};
+}
+function nextOf(n,t){for(let u=t+1;u<=t+14;u++)if(SCH.meal[u].d.tags.includes(n))return u;return null}
+
+/* 저장(메뉴 변경 기록) */
+const SK='hankki-ovr';
+async function loadOvr(){try{if(window.storage){const r=await window.storage.get(SK,false);if(r&&r.value)OVR=JSON.parse(r.value)||{}}}catch(e){}}
+async function saveOvr(){try{if(window.storage)await window.storage.set(SK,JSON.stringify(OVR),false)}catch(e){}}
+
+/* 복사·토스트 */
+let tt;function toast(m){const el=$('#toast');el.textContent=m;el.classList.add('on');clearTimeout(tt);tt=setTimeout(()=>el.classList.remove('on'),1900)}
+async function copy(txt){try{await navigator.clipboard.writeText(txt);toast('복사됨')}catch(e){const ta=document.createElement('textarea');ta.value=txt;ta.style.cssText='position:fixed;opacity:0';document.body.appendChild(ta);ta.select();try{document.execCommand('copy');toast('복사됨')}catch(_){toast('복사 실패')}ta.remove()}}
+
+/* ICS (RFC 5545: CRLF, 이스케이프, 75옥텟 폴딩) */
+const enc=new TextEncoder();
+const icsEsc=s=>String(s).replace(/\\/g,'\\\\').replace(/;/g,'\\;').replace(/,/g,'\\,').replace(/\r?\n/g,'\\n');
+function fold(line){let out='',cur='',len=0;for(const ch of line){const b=enc.encode(ch).length;if(len+b>73){out+=cur+'\r\n ';cur='';len=1}cur+=ch;len+=b}return out+cur}
+function makeIcs(){
+ const n=+$('#icN').value,tl=$('#icL').value||'11:00',sk=$('#icS').checked,ts=$('#icT').value||'15:30';
+ build(TODAY+n+1);
+ const stamp=new Date().toISOString().replace(/[-:]/g,'').replace(/\.\d+/,'');
+ const L=['BEGIN:VCALENDAR','VERSION:2.0','PRODID:-//hankki//omad//KO','CALSCALE:GREGORIAN','METHOD:PUBLISH','X-WR-CALNAME:식단'];
+ const ev=(t,hm,tag,sum,desc)=>{const day=sOf(t).replace(/-/g,''),[h,m]=hm.split(':');L.push('BEGIN:VEVENT','UID:hankki-'+day+'-'+tag+'@omad','DTSTAMP:'+stamp,'DTSTART:'+day+'T'+h+m+'00','DURATION:PT30M','SUMMARY:'+icsEsc(sum),'DESCRIPTION:'+icsEsc(desc),'BEGIN:VALARM','ACTION:DISPLAY','TRIGGER:-PT0M','DESCRIPTION:'+icsEsc(sum),'END:VALARM','END:VEVENT')};
+ for(let i=0;i<n;i++){const t=TODAY+i,d=SCH.meal[t].d,k=SCH.snack[t],bk=SCH.bk[t];
+  ev(t,tl,'L','🍽 '+d.name,['검색: '+d.kw,d.req?'요청사항: '+d.req:'',d.tip,d.org?'원산지: '+d.org:'',d.salt?'국물은 1/3만':'',d.lite?'단백질이 가벼운 메뉴 — 간식으로 보강':'','영양: '+d.tags.map(nn).join(', '),bk.length?'배달 안 되면: '+bk.map(b=>b.d.name+'('+b.match+'%)').join(' / '):''].filter(Boolean).join('\n'));
+  if(sk)ev(t,ts,'S','간식(선택) · '+k.name,'보충: '+k.tags.map(nn).join(', ')+(k.extra?'\n'+k.extra:''));
+ }
+ L.push('END:VCALENDAR');return L.map(fold).join('\r\n')+'\r\n';
+}
+function dl(){const txt=makeIcs();try{const a=document.createElement('a');a.href=URL.createObjectURL(new Blob([txt],{type:'text/calendar;charset=utf-8'}));a.download='hankki.ics';document.body.appendChild(a);a.click();setTimeout(()=>{URL.revokeObjectURL(a.href);a.remove()},1500);toast('다운로드를 시도했어요 — 안 받아지면 텍스트 복사')}catch(e){toast('다운로드가 막혔어요 — 텍스트 복사를 이용하세요')}}
+const sv=p=>`<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">${p}</svg>`;
+const IC={today:sv('<circle cx="12" cy="12" r="4"/><path d="M12 2.5v2M12 19.5v2M4.6 4.6 6 6M18 18l1.4 1.4M2.5 12h2M19.5 12h2M4.6 19.4 6 18M18 6l1.4-1.4"/>'),week:sv('<rect x="3.5" y="4.5" width="17" height="16" rx="3"/><path d="M3.5 9.5h17M8 2.5v4M16 2.5v4"/>'),menu:sv('<path d="M4 6.5h16M4 12h16M4 17.5h10"/>'),guide:sv('<path d="M5 4.5A1.5 1.5 0 0 1 6.5 3H19v15H6.5A1.5 1.5 0 0 0 5 19.5z"/><path d="M5 19.5A1.5 1.5 0 0 0 6.5 21H19"/>'),bell:sv('<path d="M6 9a6 6 0 0 1 12 0c0 6 2.5 8 2.5 8h-17S6 15 6 9"/><path d="M10.3 20.5a1.9 1.9 0 0 0 3.4 0"/>'),l:sv('<path d="m15 18-6-6 6-6"/>'),r:sv('<path d="m9 18 6-6-6-6"/>'),x:sv('<path d="M18 6 6 18M6 6l12 12"/>')};
+let TODAY=0,SEL=0,ANCHOR=0,TAB='today',NTS=matchMedia('(min-width:960px)').matches;
+const MF={cat:'all',nut:'',q:''};
+const o3s=x=>x.o3>=1?' · 오메가3 ≈'+x.o3.toFixed(1)+'g':'';
+
+function wkHead(){const cur=ANCHOR===TODAY;
+ return `<div class="wkh"><h3>${md(ANCHOR)} – ${md(ANCHOR+6)}${cur?' · 앞으로 7일':''}</h3>${cur?'':'<button class="chipbtn" data-wk="0">오늘부터</button>'}<button class="ib" data-wk="-1" aria-label="이전 7일" ${ANCHOR<=0?'disabled':''}>${IC.l}</button><button class="ib" data-wk="1" aria-label="다음 7일">${IC.r}</button></div>`}
+function stripH(){let h='<div class="strip">';for(let i=0;i<7;i++){const t=ANCHOR+i,d=SCH.meal[t].d;
+ h+=`<button class="day${t===SEL?' on':''}${t===TODAY?' today':''}" data-day="${t}" style="--c:${CAT[d.cat].c}" aria-label="${md(t)} ${esc(d.name)}"><span class="w">${t===TODAY?'오늘':wd(t)}</span><span class="n">${Number(sOf(t).slice(8))}</span><i></i></button>`}return h+'</div>'}
+
+function mealCard(){
+ const M=SCH.meal[SEL],d=M.d,isT=SEL===TODAY,bk=SCH.bk[SEL];
+ const badges=[d.months?`<span class="badge a">제철 ${mr(d.months)}</span>`:'',d.raw?'<span class="badge">날것</span>':'',d.salt?'<span class="badge w">국물 주의</span>':'',d.lite?'<span class="badge w">단백질 가벼움</span>':'',M.ovr?'<span class="badge">변경됨</span>':''].join('');
+ const chips=d.tags.map(n=>`<span class="chip">${nn(n)}</span>`).join('')+(d.extra?d.extra.split('·').map(x=>`<span class="chip x">${x}</span>`).join(''):'');
+ const bkh=bk.map(b=>`<div class="bkr" style="--c:${CAT[b.d.cat].c}"><i></i><div><b>${b.d.name}</b><small>${SHOP[b.d.shop]} · 핵심 영양 <span class="pct">${b.match}%</span>${o3s(b.d)}${b.miss.length?' · 빠짐 '+b.miss.map(nn).join('·'):''}</small></div><button class="btn sm gh" data-pick="${b.d.id}">바꾸기</button></div>`).join('');
+ const alts=SCH.alts[SEL].filter(a=>!bk.some(b=>b.d===a)).map(a=>`<button class="alt" data-pick="${a.id}" style="--c:${CAT[a.cat].c}"><i></i><span><b>${a.name}${a===M.orig?' · 원래 추천':''}</b><small>${SHOP[a.shop]} · ${a.tags.slice(0,5).map(nn).join(' · ')}</small></span></button>`).join('');
+ return `<article class="card meal" style="--c:${CAT[d.cat].c}">
+<div class="row1"><span class="cat">${CAT[d.cat].n}</span>${badges}</div>
+<div class="lbl" style="margin-top:14px">${isT?'오늘':md(SEL)+' ('+wd(SEL)+')'} 점심 · 배달</div>
+<h2>${d.name}</h2><p class="tip">${d.tip}</p>
+<div class="req"><div style="flex:1;min-width:0"><div class="lbl">요청사항</div><p>${d.req||'특별히 없음'}</p></div>${d.req?`<button class="btn sm" data-copy="${esc(d.req)}">복사</button>`:''}</div>
+<dl class="kv"><dt>검색어</dt><dd>${d.kw}<button class="lnk" data-copy="${esc(d.kw)}">복사</button></dd><dt>가게</dt><dd>${SHOP[d.shop]} · ${UB[d.ub]}${o3s(d)}</dd>${d.org?`<dt>원산지</dt><dd>${d.org}</dd>`:''}${d.salt?'<dt>나트륨</dt><dd>국물은 1/3만, 건더기 위주로</dd>':''}${d.raw?'<dt>날것</dt><dd>6~9월에는 자동으로 제외됩니다</dd>':''}</dl>
+<div class="chips">${chips}</div>
+${bk.length?`<div class="bk"><div class="lbl">배달이 안 되면 · 다른 가게 유형</div>${bkh}</div>`:''}
+<div class="foot">${M.ovr?'<button class="lnk" data-unpick>원래 추천으로</button>':''}<button class="lnk" data-more>후보 더 보기</button><button class="lnk" data-tab="menu" data-mcat="${d.cat}">전체 메뉴</button></div>
+<div id="alts" class="alts hide">${alts||'<p class="sub">다른 후보 없음</p>'}</div>
+</article>`}
+
+function snackCard(){
+ const d=SCH.meal[SEL].d,k=SCH.snack[SEL],fill=k.tags.filter(n=>!d.tags.includes(n)),pro=d.lite&&k.pro;
+ const msg=[pro?'단백질 보강':'',fill.length?'식사에 없는 '+fill.map(nn).join('·')+' 채움':(!pro?'식사 영양을 한 번 더 보강':'')].filter(Boolean).join(' · ');
+ return `<article class="card snack"><div class="row1"><span class="lbl" style="margin-right:auto">간식 · 선택</span>${fill.length?`<span class="badge a">+${fill.length} 보충</span>`:''}</div>
+<h3>${k.name}</h3><p>${msg}${k.extra?' · '+k.extra:''}</p></article>`}
+
+function covCard(){
+ const st=stats(ANCHOR);
+ let last=null;for(let t=SEL;t>=Math.max(0,SEL-14);t--){if(SCH.meal[t].d.o3>=1){last=t;break}}
+ let nx=null;for(let t=SEL+1;t<=SEL+14;t++){if(SCH.meal[t].d.o3>=1){nx=t;break}}
+ const o3t=(last===SEL?'이날 섭취':last!==null?(SEL-last)+'일 전 섭취':'2주 내 없음')+(nx?' · 다음 '+wd(nx)+' '+md(nx):'');
+ const tiles=st.groups.map(g=>{const m=Math.round(g.ms*100),a=Math.round(g.as*100),bc=m>=85?'var(--acc)':m>=60?'var(--warn)':'var(--bad)';
+  return `<div class="g" style="--bc:${bc}"><div class="n">${g.n}</div><div class="v">${m}<span>%</span></div><small>간식 포함 ${a}%</small><div class="bar"><b class="s" style="width:${a}%"></b><b style="width:${m}%"></b></div></div>`}).join('');
+ let grid=`<div class="ng hdr"><span></span>${[0,1,2,3,4,5,6].map(i=>`<span class="${ANCHOR+i===SEL?'cur':''}">${wd(ANCHOR+i)}</span>`).join('')}<span></span></div>`;
+ st.rows.forEach(r=>{const N=NUT[r.n],x=nextOf(r.n,SEL),cls=r.mc>=r.req?'ok':r.ac>=r.req?'sn':'';
+  grid+=`<details class="nr"><summary><div class="ng"><span class="nn">${N.n}</span>${r.cells.map((c,i)=>`<span class="${ANCHOR+i===SEL?'cur':''}"><i class="dot ${c===2?'m':c===1?'s':''}"></i></span>`).join('')}<span class="fr ${cls}">${r.mc}${r.ac>r.mc?'<sup>+'+(r.ac-r.mc)+'</sup>':''}/${r.req}</span></div></summary>
+<div class="nd"><p>${N.why}</p><p><b>간격</b> ${N.g}일 이내 · 7일에 ${r.req}회 이상 · <b>급원</b> ${N.src}</p><p><b>다음 식사</b> ${x?wd(x)+' '+md(x)+' · '+SCH.meal[x].d.name:'2주 안에 없음 — 간식으로 보충'}</p></div></details>`});
+ return `<section class="card cov">
+<div class="hd"><h3>7일 영양 밸런스</h3><span class="sub">큰 숫자 = 식사만</span></div>
+<div class="o3"><div class="row1"><span class="lbl" style="margin-right:auto">EPA+DHA (오메가3)</span><span class="sub">${o3t}</span></div>
+<div class="v"><b>${st.o3.toFixed(1)}g</b><span class="sub">/ 목표 ${O3T}g · 하루 평균 ${Math.round(st.o3/7*1000)}mg</span></div>
+<div class="bar" style="--bc:${st.o3>=O3T?'var(--acc)':'var(--warn)'}"><b style="width:${Math.min(100,st.o3/O3T*100)}%"></b></div></div>
+<div class="gs">${tiles}</div>
+<div class="legend"><span><i class="dot m"></i>식사</span><span><i class="dot s"></i>간식으로 보충</span><span>국물 ${st.salt}/${SALT_MAX}회 · 붉은 고기 ${st.red}회</span></div>
+<details class="nts" id="nts"${NTS?' open':''}><summary>영양소별 7일 보기</summary>${grid}</details>
+</section>`}
+
+function renderToday(){
+ $('#v-today').innerHTML=`<div class="today"><div class="full">${wkHead()}${stripH()}</div>
+<div class="stack">${mealCard()}${snackCard()}</div>
+<div class="side stack">${covCard()}<p class="habit">물 1.5–2L · 식후 10분 걷기 · 20분마다 20초 먼 곳 보기</p></div></div>`;
+ const n=$('#nts');if(n)n.addEventListener('toggle',()=>NTS=n.open);
+}
+
+function renderWeek(){
+ const st=stats(ANCHOR),cnt={},buy=new Set();let li='';
+ for(let i=0;i<7;i++){const t=ANCHOR+i,M=SCH.meal[t],d=M.d,k=SCH.snack[t],b=SCH.bk[t][0];cnt[d.cat]=(cnt[d.cat]||0)+1;k.buy.forEach(x=>buy.add(x));
+  li+=`<button class="wi${t===SEL?' on':''}" data-day="${t}" data-go="today" style="--c:${CAT[d.cat].c}"><span class="wd"><b>${wd(t)}</b><small>${md(t)}</small></span><i></i><span class="wm"><b>${d.name}</b><small>${M.ovr?'변경됨 · ':''}대체 ${b?b.d.name:'—'} · 간식 ${k.name}</small></span>${t===TODAY?'<span class="badge a">오늘</span>':'<span></span>'}</button>`}
+ $('#v-week').innerHTML=`${wkHead()}<div class="wgrid"><div class="card wl">${li}</div><div class="stack">
+<section class="card"><div class="hd"><h3>7일 구성</h3></div><div class="chips">${Object.keys(CAT).filter(c=>cnt[c]).map(c=>`<span class="chip cc" style="--c:${CAT[c].c}">${CAT[c].n} ${cnt[c]}</span>`).join('')}</div>
+<div class="kpi"><div><b>${st.o3.toFixed(1)}g</b><small>EPA+DHA · 목표 ${O3T}g</small></div><div><b>${st.salt}/${SALT_MAX}</b><small>국물 메뉴</small></div><div><b>${st.red}</b><small>붉은 고기</small></div></div></section>
+<section class="card"><div class="hd"><h3>간식 장보기</h3><span class="sub">선택 · 7일분</span></div><div class="chips">${[...buy].map(x=>`<span class="chip">${x}</span>`).join('')}</div><p class="sub" style="margin:12px 0 0">간식은 안 먹어도 되지만, 먹는다면 한 번에 주문해 두면 편합니다.</p></section></div></div>`;
+}
+
+function renderMenu(){
+ const cats=[['all','전체'],...Object.entries(CAT).map(([k,v])=>[k,v.n])];
+ $('#v-menu').innerHTML=`<div class="mf"><input id="mq" type="search" placeholder="메뉴 검색" value="${esc(MF.q)}"><select id="mn" aria-label="영양소"><option value="">영양소 전체</option>${NK.map(n=>`<option value="${n}"${MF.nut===n?' selected':''}>${NUT[n].n}</option>`).join('')}</select></div>
+<div class="seg">${cats.map(([k,n])=>`<button data-mc="${k}" class="${MF.cat===k?'on':''}">${n}</button>`).join('')}</div><div id="ml" class="card list"></div>`;
+ $('#mq').oninput=e=>{MF.q=e.target.value;menuList()};$('#mn').onchange=e=>{MF.nut=e.target.value;menuList()};menuList();
+}
+function menuList(){
+ const q=MF.q.trim(),mo=monthOf(SEL),L=D.filter(d=>(MF.cat==='all'||d.cat===MF.cat)&&(!MF.nut||d.tags.includes(MF.nut))&&(!q||(d.name+d.kw).includes(q)));
+ $('#ml').innerHTML=`<div class="lh">${L.length}개 · 지정 대상 ${md(SEL)} (${wd(SEL)})</div>`+L.map(d=>`<details class="mi" style="--c:${CAT[d.cat].c}"><summary><span class="no">${D.indexOf(d)+1}</span><span class="mn"><b>${d.name}</b><small>${CAT[d.cat].n} · ${SHOP[d.shop]} · ${UB[d.ub]}${d.months?' · 제철 '+mr(d.months):''}${d.raw?' · 날것':''}${d.salt?' · 국물':''}${d.lite?' · 단백질 가벼움':''}</small></span><span class="mt">${d.tags.slice(0,3).map(nn).join(' · ')}</span></summary>
+<div class="md"><p class="sub" style="margin:0">${d.tip}${o3s(d)}</p>${d.req?`<div class="req"><div style="flex:1;min-width:0"><div class="lbl">요청사항</div><p>${d.req}</p></div><button class="btn sm gh" data-copy="${esc(d.req)}">복사</button></div>`:''}${d.org?`<p class="sub" style="margin:0">원산지 · ${d.org}</p>`:''}<div class="chips">${d.tags.map(n=>`<span class="chip">${nn(n)}</span>`).join('')}</div><div><button class="btn sm" data-pick="${d.id}">${md(SEL)} (${wd(SEL)}) 메뉴로 지정</button>${avail(d,mo)?'':' <span class="badge w">이 날짜엔 제철 아님/여름 날것</span>'}</div></div></details>`).join('');
+}
+
+function renderGuide(){
+ const g=$('#v-guide');if(g.dataset.ok)return;g.dataset.ok=1;
+ const by={2:[],3:[],4:[],7:[]};NK.forEach(n=>by[NUT[n].g].push(NUT[n].n));
+ const PAT=[['월','등푸른생선','F'],['화','소·양','B'],['수','해산물','S'],['목','등푸른생선','F'],['금','돼지','P'],['토','해산물·흰살','S'],['일','가벼운 날','V']];
+ g.innerHTML=`<div class="gg">
+<section class="card"><h3>섭취 간격 — 몸에 저장되는 만큼만</h3><div class="iv">
+<div><b>2일</b><span>${by[2].join(' · ')}</span><small>거의 저장되지 않음 → 7일에 4회 이상</small></div>
+<div><b>3일</b><span>${by[3].join(' · ')}</span><small>회전이 빠르거나 하루 필요량이 큼 → 7일에 3회</small></div>
+<div><b>4일</b><span>${by[4].join(' · ')}</span><small>저장고가 작거나 조직에 천천히 쌓임 → 7일에 2회</small></div>
+<div><b>7일</b><span>${by[7].join(' · ')}</span><small>간·지방에 저장 → 주 1회면 충분, 매일은 오히려 과잉</small></div></div>
+<div class="note"><b>오메가3는 왜 3~4일 간격인가</b><p>EPA·DHA는 먹고 나서 혈중 농도가 1~2일이면 내려가지만, 적혈구와 세포막에는 몇 주~몇 달에 걸쳐 쌓입니다. 그래서 핵심은 주간 총량이고, 혈중 농도가 오래 비지 않도록 등푸른생선을 3~4일 간격으로 7일에 2번 배치했습니다. 목표는 주 3.5g(하루 평균 500mg) — 고등어·연어 한 토막이 대략 2~2.5g입니다.</p></div></section>
+<section class="card"><h3>로테이션 규칙</h3><div class="pat">${PAT.map(p=>`<div style="--c:${CAT[p[2]].c}"><b>${p[0]}</b><i></i>${p[1]}</div>`).join('')}</div>
+<ul style="margin-top:14px"><li>메뉴 ${D.length}개. 요일 칸 안에서 가장 오래 비어 있던 영양소를 채우는 메뉴를 고르고, 같은 메뉴는 21일 안에 다시 나오지 않습니다.</li><li>국물 메뉴는 어느 7일을 잘라도 최대 ${SALT_MAX}회, 직화 구이가 몰리면 수육·탕·회 쪽으로 돌립니다.</li><li>매일 다른 가게 유형의 대체 메뉴 2개를 같은 영양 기준으로 계산해, 겹치는 영양 비율과 빠지는 영양소를 보여줍니다. 대체로 바꾸면 그다음 날부터 빠진 영양소를 우선 채우도록 다시 계산됩니다.</li><li>두부·비빔밥처럼 단백질이 가벼운 날은 간식으로 계란·요거트·치즈를 우선 추천합니다.</li><li>제철(전어·대하 9~11월, 굴 10~3월, 방어·과메기 11~2월)은 자동 반영, 6~9월에는 날것을 뺍니다.</li><li>날짜 기준 계산이라 어느 기기에서 열어도 같은 날 같은 메뉴입니다.</li></ul></section>
+<section class="card"><h3>빼는 것</h3><ul>
+<li><b>닭·오리</b> — 전 메뉴에서 제외</li>
+<li><b>가공육</b> — 햄·소시지·베이컨·스팸이 들어간 메뉴</li>
+<li><b>정제 탄수화물</b> — 공기밥·면·사리·떡·빵·튀김옷은 요청사항으로 빼기. 비빔밥·덮밥류만 밥 1/3</li>
+<li><b>정제당</b> — 단 양념(양념갈비·제육·떡볶이) 대신 소금구이·수육·탕·회. 초장·발사믹은 조금만</li>
+<li><b>김치</b> — 외식·배달 김치는 수입산 비중이 높아 요청사항에서 빼기</li>
+<li><b>곱창·순대·내장류</b> — 위생·유통 편차가 커서 제외</li>
+<li><b>생 조개·굴, 여름철 날것</b> — 간이 약하면 비브리오 감염 위험이 커서 익힌 것만</li></ul></section>
+<section class="card"><h3>1일1식 운용</h3><ul>
+<li>한 끼 단백질 40g 이상 — 고기·생선 200g 안팎(손바닥 두 개)</li>
+<li>채소 → 단백질 → (있다면) 밥 순서로, 천천히</li>
+<li>국물은 1/3만 — 배달 국·탕 한 그릇의 나트륨이 하루 권고량(2,000mg)에 육박하는 경우가 많음</li>
+<li>뜨거운 국물·찜은 받자마자 그릇에 옮겨 담기</li>
+<li>식후 10~15분 걷기 — 오래 앉아 있는 날일수록</li>
+<li>체중이 2주 넘게 계속 빠지면 간식을 매일로</li>
+<li>눈: 20분마다 20초, 6m 이상 먼 곳 보기 · 물 1.5~2L</li></ul></section>
+<section class="card"><h3>꼭 알아둘 것</h3><ul>
+<li><b>비타민D</b> — 10~3월엔 햇빛 합성이 크게 줄어 식사만으론 부족하기 쉬움. 혈중 농도 검사 후 보충 고려</li>
+<li><b>루테인·칼슘·콜린</b> — 배달 한 끼로 매주 채우기 가장 어려운 셋. 간식이 이 자리를 우선 채우도록 설계</li>
+<li><b>와파린</b> 복용 중이면 청국장·잎채소·케일 녹즙 양을 들쭉날쭉하지 않게 (비타민K)</li>
+<li><b>통풍·요산</b> 수치가 높으면 조개·등푸른생선 빈도 조절</li>
+<li>브라질너트는 하루 2알 이하, 철분제는 검사 없이 먹지 않기</li>
+<li>간·심장 질환 진단이 있거나 복용 중인 약이 있으면 담당 의사와 먼저 상의</li></ul>
+<p class="sub" style="margin:12px 0 0">영양 표시는 일반 배달 1인분 기준 추정치입니다. 데치거나 끓인 채소의 비타민C·엽산은 계산에서 보수적으로 뺐습니다. 원산지는 배달앱 메뉴 상세의 원산지 표시로 확인하세요.</p></section>
+</div>`;
+}
+
+function render(){
+ TODAY=Math.max(0,tOf(todayStr()));
+ build(Math.max(ANCHOR+7,SEL,TODAY)+21);
+ const s=sOf(SEL),dt=new Date(Date.UTC(+s.slice(0,4),+s.slice(5,7)-1,+s.slice(8,10)));
+ $('#hd').textContent=`${dt.getUTCMonth()+1}월 ${dt.getUTCDate()}일 ${WD[dt.getUTCDay()]}요일${SEL===TODAY?' · 오늘':''}`;
+ document.querySelectorAll('#tabs button').forEach(b=>b.setAttribute('aria-current',b.dataset.tab===TAB?'page':'false'));
+ ['today','week','menu','guide'].forEach(v=>$('#v-'+v).classList.toggle('hide',v!==TAB));
+ ({today:renderToday,week:renderWeek,menu:renderMenu,guide:renderGuide})[TAB]();
+}
+
+document.addEventListener('click',e=>{
+ const b=e.target.closest('button,[data-close]');if(!b)return;const o=b.dataset;
+ if('copy' in o){copy(o.copy);return}
+ if('tab' in o){TAB=o.tab;if(o.mcat){MF.cat=o.mcat;MF.nut='';MF.q=''}render();scrollTo(0,0);return}
+ if('day' in o){SEL=+o.day;if(o.go){TAB=o.go;render();scrollTo(0,0)}else render();return}
+ if('wk' in o){const v=+o.wk;if(v===0){ANCHOR=TODAY;SEL=TODAY}else{const off=SEL-ANCHOR;ANCHOR=Math.max(0,ANCHOR+7*v);SEL=ANCHOR+off}render();return}
+ if('more' in o){const a=$('#alts');if(a)a.classList.toggle('hide');return}
+ if('pick' in o){const key=sOf(SEL),orig=SCH.meal[SEL].orig.id,d=D.find(x=>x.id===o.pick),ok=avail(d,monthOf(SEL));
+  if(o.pick===orig)delete OVR[key];else OVR[key]=o.pick;SCH=null;saveOvr();TAB='today';render();scrollTo(0,0);
+  toast(ok?'메뉴를 바꿨어요 — 이후 추천도 다시 계산했어요':'지정했어요 · 제철이 아니거나 여름 날것이니 주의');return}
+ if('unpick' in o){delete OVR[sOf(SEL)];SCH=null;saveOvr();render();toast('원래 추천으로 돌렸어요');return}
+ if('mc' in o){MF.cat=o.mc;renderMenu();return}
+ if('sheet' in o){$('#sheet').classList.remove('hide');return}
+ if('close' in o){$('#sheet').classList.add('hide');return}
+ if('dl' in o){dl();return}
+ if('ct' in o){copy(makeIcs());return}
+});
+document.addEventListener('keydown',e=>{if(e.key==='Escape')$('#sheet').classList.add('hide')});
+document.addEventListener('visibilitychange',()=>{if(document.hidden)return;const nt=Math.max(0,tOf(todayStr()));if(nt!==TODAY){if(ANCHOR===TODAY)ANCHOR=nt;if(SEL===TODAY)SEL=nt;render()}});
+
+$('#tabs').innerHTML=[['today','오늘'],['week','주간'],['menu','메뉴 '+D.length],['guide','원칙']].map(([k,n])=>`<button data-tab="${k}">${IC[k]}<span>${n}</span></button>`).join('');
+$('#bell').innerHTML=IC.bell;$('#xbtn').innerHTML=IC.x;
+(async()=>{TODAY=Math.max(0,tOf(todayStr()));SEL=ANCHOR=TODAY;await loadOvr();render()})();
+</script>
+</body>
+</html>
